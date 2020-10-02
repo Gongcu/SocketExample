@@ -16,7 +16,7 @@ import kotlin.properties.Delegates
 
 class ChattingActivity : AppCompatActivity() {
     private var roomNum by Delegates.notNull<Int>()
-    private val mSocket = IO.socket("http://211.176.83.66:3000")
+    private val mSocket = IO.socket("IP")
     private val ioScope = CoroutineScope(Dispatchers.Main)
     private val adapter:Adapter by lazy{
         Adapter(this)
