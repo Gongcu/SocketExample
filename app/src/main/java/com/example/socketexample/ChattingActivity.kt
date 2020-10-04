@@ -15,11 +15,11 @@ import kotlin.properties.Delegates
 
 
 class ChattingActivity : AppCompatActivity() {
-    private var roomNum by Delegates.notNull<Int>()
+    private lateinit var room: String
     private val mSocket = IO.socket("http://211.176.83.66:3000")
     private val ioScope = CoroutineScope(Dispatchers.Main)
-    private val adapter:Adapter by lazy{
-        Adapter(this)
+    private val adapter:ChatAdapter by lazy{
+        ChatAdapter(this)
     }
 
     //새 메시지가(new message 이벤트) 도착할 시 뷰를 업데이트 하는 리스너
@@ -45,11 +45,11 @@ class ChattingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
 
-        roomNum= intent.extras!!.getInt("room")
+        room= intent.extras!!.getString("room")!!
 
         mSocket.on("new message", onNewMessage)
         mSocket.connect() //room 번호 따라 다르게 연결하게 코드 변경 필요
-        mSocket.emit("join", roomNum)//방 입장
+        mSocket.emit("join", room)//방 입장
 
         recyclerView.adapter = adapter
 
@@ -61,8 +61,8 @@ class ChattingActivity : AppCompatActivity() {
     private fun attemptSend() {
         val message: String = inputMessageTextView.text.toString()
         val jsonObject = JSONObject()
-        jsonObject.put("room", roomNum)
-        jsonObject.put("sender", "공채운")
+        jsonObject.put("room", room)
+        jsonObject.put("sender", "홍길동")
         jsonObject.put("message", message)
         if (TextUtils.isEmpty(message)) {
             return
