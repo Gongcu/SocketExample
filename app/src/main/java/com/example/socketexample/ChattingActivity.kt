@@ -62,7 +62,7 @@ class ChattingActivity : AppCompatActivity() {
         val message: String = inputMessageTextView.text.toString()
         val jsonObject = JSONObject()
         jsonObject.put("room", room)
-        jsonObject.put("sender", "홍길동")
+        jsonObject.put("sender", "공채운")
         jsonObject.put("message", message)
         if (TextUtils.isEmpty(message)) {
             return
