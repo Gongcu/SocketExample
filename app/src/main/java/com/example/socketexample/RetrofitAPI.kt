@@ -6,12 +6,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitAPI {
     private var instance : Retrofit? = null
-    private val gson = GsonBuilder().setLenient().create()
-
-    fun getInstnace() : Retrofit {
+    fun getInstance() : Retrofit {
         if(instance == null){
             instance = Retrofit.Builder()
-                .baseUrl("http://211.176.83.66:3000/")
+                .baseUrl(MainActivity.IP)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }
