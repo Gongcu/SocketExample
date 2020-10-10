@@ -1,13 +1,14 @@
-package com.example.socketexample
+package com.example.socketexample.adapter
 
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.socketexample.R
+import com.example.socketexample.model.ChatItem
 
 class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<ChatItem>()
@@ -48,8 +49,13 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
             super.getItemViewType(position)
     }
 
-    fun addItem(item:ChatItem){
+    fun addItem(item: ChatItem){
         list.add(item)
+        notifyDataSetChanged()
+        Log.d("notifydatasetchage",list.toString())
+    }
+    fun setItem(list: List<ChatItem>){
+        this.list.addAll(list)
         notifyDataSetChanged()
         Log.d("notifydatasetchage",list.toString())
     }
@@ -61,7 +67,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
 
         fun bind(item: ChatItem){
-            nameTextView.text=item.sender;
+            nameTextView.text=item.user.name;
             messageTextView.text=item.message
             timeTextView.text = item.time
         }

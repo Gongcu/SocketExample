@@ -1,17 +1,16 @@
-package com.example.socketexample
+package com.example.socketexample.model
 
 data class ChatroomSetter(
-    val _id: String,
+    val id: String,
     val name: String,
     val club_id: String,
     val participation_uid_list: ArrayList<String>
 )
 
 data class ChatroomGetter(
-    val _id: String,
+    val id: String,
     val name: String,
     val club_id: String,
-    val participation_uid_list: ArrayList<ChatUser>
 )
 
 data class ChatUser(

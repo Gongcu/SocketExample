@@ -1,9 +1,13 @@
 package com.example.socketexample
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.socketexample.adapter.ChatRoomAdapter
+import com.example.socketexample.model.ChatroomGetter
+import com.example.socketexample.model.ChatroomSetter
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -11,18 +15,21 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var uid: String
+    private lateinit var name: String
     private val retrofit = RetrofitAPI.getInstance()
     private val api = retrofit.create(ChatRoomService::class.java)
-    private val adapter:ChatRoomAdapter by lazy{
-        ChatRoomAdapter(this)
+    private val adapter: ChatRoomAdapter by lazy{
+        ChatRoomAdapter(this,uid,name)
     }
-    private val userList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        userList.add(USER1_ID)
-        userList.add(USER2_ID)
+
+        uid= intent.extras!!.getString("uid")!!
+        name= intent.extras!!.getString("name")!!
+
         chatroomRecyclerView.adapter = adapter
 
 
@@ -60,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     fun getChatroom(){
         api.getChatRoom(CLUB_ID).enqueue(object : Callback<List<ChatroomGetter>> {
-            override fun onResponse(call: Call<List<ChatroomGetter>>,response: Response<List<ChatroomGetter>>) {
+            override fun onResponse(call: Call<List<ChatroomGetter>>, response: Response<List<ChatroomGetter>>) {
                 if (response.body() != null) {
                     adapter.setList(response.body()!!)
                 }
@@ -72,9 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val IP = "http://211.176.83.66:3000/"
-        const val CLUB_ID = "5f76b1830ba3354340163d6d"
-        const val USER1_ID = "5f4fa0073fabdf5f285bdc08"
-        const val USER2_ID = "5f4fa75a35adb13fa8823de6"
+        const val CLUB_ID = "1"
 
     }
 }
