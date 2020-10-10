@@ -10,11 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socketexample.ChattingActivity
 import com.example.socketexample.MainActivity
 import com.example.socketexample.R
-import com.example.socketexample.model.ChatItem
-import com.example.socketexample.model.ChatroomGetter
 import com.example.socketexample.model.User
 
 class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapter.ItemViewHolder>() {

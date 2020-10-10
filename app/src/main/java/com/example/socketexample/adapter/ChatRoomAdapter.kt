@@ -12,11 +12,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.socketexample.ChattingActivity
 import com.example.socketexample.R
-import com.example.socketexample.model.ChatroomGetter
-import com.example.socketexample.model.ChatroomSetter
+import com.example.socketexample.model.Chatroom
 
 class ChatRoomAdapter(private val context: Context,private val uid: String,private val name: String) : RecyclerView.Adapter<ChatRoomAdapter.ViewHolder>() {
-    private val list = ArrayList<ChatroomGetter>()
+    private val list = ArrayList<Chatroom>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_chatroom, parent, false)
@@ -31,13 +30,13 @@ class ChatRoomAdapter(private val context: Context,private val uid: String,priva
         return list.size
     }
 
-    fun addItem(item: ChatroomSetter){
-        val chatroomGetter = ChatroomGetter(item.id,item.name,item.club_id)
+    fun addItem(item: Chatroom){
+        val chatroomGetter = Chatroom(item.id,item.name,item.club_id)
         list.add(chatroomGetter)
         notifyDataSetChanged()
         Log.d("notifydatasetchage",list.toString())
     }
-    fun setList(list:List<ChatroomGetter>){
+    fun setList(list:List<Chatroom>){
         this.list.addAll(list)
         notifyDataSetChanged()
         Log.d("notifydatasetchage",list.toString())
@@ -47,7 +46,7 @@ class ChatRoomAdapter(private val context: Context,private val uid: String,priva
         private val rootView = itemView
         private val nameTextView = itemView.findViewById<TextView>(R.id.nameTextView)
 
-        fun bind(item: ChatroomGetter){
+        fun bind(item: Chatroom){
             nameTextView.text=item.name
             rootView.setOnClickListener {
                 val intent = Intent(context, ChattingActivity::class.java)

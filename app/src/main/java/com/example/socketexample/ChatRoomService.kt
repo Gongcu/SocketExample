@@ -12,20 +12,21 @@ interface ChatRoomService {
     @GET("/chatroom/{club_id}")
     fun getChatRoom(
         @Path("club_id") club_id:String
-    ): Call<List<ChatroomGetter>>
+    ): Call<List<Chatroom>>
 
     @POST("/chatroom")
     fun addChatRoom(
-        @Body chatroom: ChatroomSetter,
-    ): Call<ChatroomSetter>
+        @Body chatroom: Chatroom,
+    ): Call<Chatroom>
 
-    @GET("/chat/{chatroomId}")
+    @GET("/chatroom/enter/{chatroomId}/{uid}")
     fun getChat(
-        @Path("chatroomId") chatroomId:String
-    ): Call<List<ChatItem>>
+        @Path("chatroomId") chatroomId:String,
+        @Path("uid") uid:String,
+        ): Call<List<ChatItem>>
 
     @POST("/chat")
     fun sendChat(
-        @Body chat: Chat,
+        @Body chat: Chat
     ): Call<Chat>
 }

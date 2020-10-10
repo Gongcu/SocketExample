@@ -72,12 +72,12 @@ class ChattingActivity : AppCompatActivity() {
     }
 
     private fun getChatting() {
-        api.getChat(room).enqueue(object: Callback<List<ChatItem>> {
+        api.getChat(room,uid).enqueue(object: Callback<List<ChatItem>> {
             override fun onResponse(call: Call<List<ChatItem>>, response: Response<List<ChatItem>>) {
+                Log.d("res",response!!.body()!!.toString())
                 var list = response!!.body()!!
                 for(i in list.indices){
-                    Log.d("data",list[i].user.id+","+uid)
-                    if(list[i].user.id==uid){
+                    if(list[i].uid==uid){
                         list[i].viewType=ChatAdapter.MY_CHAT
                     }
                     else
@@ -86,6 +86,7 @@ class ChattingActivity : AppCompatActivity() {
                 adapter.setItem(list)
             }
             override fun onFailure(call: Call<List<ChatItem>>, t: Throwable) {
+                Log.d("tt",t.message)
             }
         })
     }
@@ -101,14 +102,16 @@ class ChattingActivity : AppCompatActivity() {
             val image: String
             val message: String
             val time: String
+            val count: Int
 
             sender_uid = data!!.getString("uid")
-            name = data!!.getJSONObject("User").getString("name")
-            image = data!!.getJSONObject("User").getString("image")
+            name = data!!.getString("name")
+            image = data!!.getString("image")
             message = data!!.getString("message")
             time = data!!.getString("createdAt")
+            count = data!!.getInt("count")
 
-            val chatItem = ChatItem(User(sender_uid,name,image), message, time)
+            val chatItem = ChatItem(sender_uid,name,image,message,count,time)
             if(sender_uid == uid)
                 chatItem.viewType= ChatAdapter.MY_CHAT
             else

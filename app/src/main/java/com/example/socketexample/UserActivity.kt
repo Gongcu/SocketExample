@@ -2,11 +2,8 @@ package com.example.socketexample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.socketexample.adapter.ChatRoomAdapter
 import com.example.socketexample.adapter.UserAdapter
-import com.example.socketexample.model.ChatroomGetter
 import com.example.socketexample.model.User
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_user.*
 import retrofit2.Call
 import retrofit2.Callback

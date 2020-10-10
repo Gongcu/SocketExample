@@ -13,8 +13,10 @@
         android:text="안녕하세요 공채운입니다."
         android:textSize="16dp"
         android:textColor="@color/black"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,6 +27,16 @@
         android:layout_marginEnd="4dp"
         android:text="20:10"
         android:textSize="8dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/messageTextView" />
+    <TextView
+        android:id="@+id/countTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/yellow"
+        android:textSize="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/timeTextView"
         app:layout_constraintEnd_toStartOf="@+id/messageTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

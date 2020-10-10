@@ -1,13 +1,11 @@
 package com.example.socketexample
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.socketexample.adapter.ChatRoomAdapter
-import com.example.socketexample.model.ChatroomGetter
-import com.example.socketexample.model.ChatroomSetter
+import com.example.socketexample.model.Chatroom
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -49,31 +47,31 @@ class MainActivity : AppCompatActivity() {
 
         builder.setView(dialogView)
             .setPositiveButton("확인") { dialogInterface, i ->
-                addChatroom(ChatroomSetter("",name.text.toString(),CLUB_ID,ArrayList()))
+                addChatroom(Chatroom("",name.text.toString(),CLUB_ID))
             }.show()
     }
 
-    fun addChatroom(chatroom: ChatroomSetter){
-        api.addChatRoom(chatroom).enqueue(object : Callback<ChatroomSetter> {
-            override fun onResponse(call: Call<ChatroomSetter>, response: Response<ChatroomSetter>) {
+    fun addChatroom(chatroom: Chatroom){
+        api.addChatRoom(chatroom).enqueue(object : Callback<Chatroom> {
+            override fun onResponse(call: Call<Chatroom>, response: Response<Chatroom>) {
                 if (response.body() != null) {
                     adapter.addItem(response.body()!!)
                 }
             }
-            override fun onFailure(call: Call<ChatroomSetter>, t: Throwable) {
+            override fun onFailure(call: Call<Chatroom>, t: Throwable) {
             }
         })
     }
 
     fun getChatroom(){
-        api.getChatRoom(CLUB_ID).enqueue(object : Callback<List<ChatroomGetter>> {
-            override fun onResponse(call: Call<List<ChatroomGetter>>, response: Response<List<ChatroomGetter>>) {
+        api.getChatRoom(CLUB_ID).enqueue(object : Callback<List<Chatroom>> {
+            override fun onResponse(call: Call<List<Chatroom>>, response: Response<List<Chatroom>>) {
                 if (response.body() != null) {
                     adapter.setList(response.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<List<ChatroomGetter>>, t: Throwable) {}
+            override fun onFailure(call: Call<List<Chatroom>>, t: Throwable) {}
         })
     }
 

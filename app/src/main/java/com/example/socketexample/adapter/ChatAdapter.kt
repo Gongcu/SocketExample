@@ -5,8 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.example.socketexample.MainActivity
 import com.example.socketexample.R
 import com.example.socketexample.model.ChatItem
 
@@ -64,22 +69,32 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
         private val nameTextView = itemView.findViewById<TextView>(R.id.nameTextView)
         private val messageTextView = itemView.findViewById<TextView>(R.id.messageTextView)
         private val timeTextView = itemView.findViewById<TextView>(R.id.timeTextView)
-
+        private val countTextView = itemView.findViewById<TextView>(R.id.countTextView)
+        private val profileImageView = itemView.findViewById<ImageView>(R.id.profileImageView)
 
         fun bind(item: ChatItem){
-            nameTextView.text=item.user.name;
+            val url = MainActivity.IP+"image/"+item.image
+            nameTextView.text=item.name
             messageTextView.text=item.message
             timeTextView.text = item.time
+            if(item.count!=0){
+                countTextView.text=item.count.toString()
+            }
+            Glide.with(context).load(url).apply(RequestOptions.bitmapTransform(RoundedCorners(15))).into(profileImageView).onLoadFailed(context.getDrawable(R.drawable.ic_baseline_person_24))
         }
     }
 
     inner class MyChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val messageTextView = itemView.findViewById<TextView>(R.id.messageTextView)
         private val timeTextView = itemView.findViewById<TextView>(R.id.timeTextView)
+        private val countTextView = itemView.findViewById<TextView>(R.id.countTextView)
 
         fun bind(item: ChatItem){
             messageTextView.text=item.message
             timeTextView.text = item.time
+            if(item.count!=0){
+                countTextView.text=item.count.toString()
+            }
         }
     }
 
