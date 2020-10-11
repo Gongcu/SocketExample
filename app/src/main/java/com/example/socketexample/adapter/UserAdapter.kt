@@ -43,7 +43,7 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
         fun bind(item: User){
             val url = MainActivity.IP+"image/"+item.image
             nameTextView.text=item.name;
-            Glide.with(context).load(url).into(imageView).onLoadFailed(context.getDrawable(R.drawable.ic_baseline_person_24))
+            Glide.with(context).load(url).into(imageView)
             itemView.setOnClickListener {
                 val intent = Intent(context, MainActivity::class.java)
                 Log.d("uid",list.toString())

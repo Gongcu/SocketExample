@@ -23,6 +23,7 @@ import retrofit2.Response
 
 
 class ChattingActivity : AppCompatActivity() {
+    private val list = ArrayList<ChatItem>()
     private lateinit var uid: String
     private lateinit var room: String
     private lateinit var name: String
@@ -31,7 +32,7 @@ class ChattingActivity : AppCompatActivity() {
     private val adapter: ChatAdapter by lazy{
         ChatAdapter(this)
     }
-
+    private val data:JSONObject = JSONObject()
     private val retrofit = RetrofitAPI.getInstance()
     private val api = retrofit.create(ChatRoomService::class.java)
 
@@ -43,14 +44,12 @@ class ChattingActivity : AppCompatActivity() {
         room= intent.extras!!.getString("room")!!
         name= intent.extras!!.getString("name")!!
 
+        data.put("chatroomId",room)
+        data.put("uid",uid)
+
         val room_name= intent.extras!!.getString("room_name")!!
         chatroomNameTextView.text=room_name
 
-
-        mSocket.on("new message", onNewMessage)
-        mSocket.on("join", onJoin)
-        mSocket.connect() //room 번호 따라 다르게 연결하게 코드 변경 필요
-        mSocket.emit("join", room)//방 입장
 
         recyclerView.adapter = adapter
 
@@ -66,6 +65,7 @@ class ChattingActivity : AppCompatActivity() {
         api.sendChat(Chat(uid,message,room)).enqueue(object: Callback<Chat>{
             override fun onResponse(call: Call<Chat>, response: Response<Chat>) {
                 Log.d("send",response.body().toString())
+                //chatroom=null 응답값으로 오는 chatroom값 어차피 필요없어서 그렇게 처리함. 근데 보낼때는 필수
             }
 
             override fun onFailure(call: Call<Chat>, t: Throwable) {
@@ -78,7 +78,7 @@ class ChattingActivity : AppCompatActivity() {
         api.getChat(room,uid).enqueue(object: Callback<List<ChatItem>> {
             override fun onResponse(call: Call<List<ChatItem>>, response: Response<List<ChatItem>>) {
                 Log.d("res",response!!.body()!!.toString())
-                var list = response!!.body()!!
+                list.addAll(response.body()!!)
                 for(i in list.indices){
                     if(list[i].uid==uid){
                         list[i].viewType=ChatAdapter.MY_CHAT
@@ -86,7 +86,8 @@ class ChattingActivity : AppCompatActivity() {
                     else
                         list[i].viewType=ChatAdapter.OTHER_CHAT
                 }
-                adapter.setItem(list)
+                adapter.setList(list)
+                recyclerView.scrollToPosition(adapter.itemCount - 1)
             }
             override fun onFailure(call: Call<List<ChatItem>>, t: Throwable) {
                 Log.d("tt",t.message)
@@ -95,72 +96,77 @@ class ChattingActivity : AppCompatActivity() {
     }
 
 
-    //새 메시지가(new message 이벤트) 도착할 시 뷰를 업데이트 하는 리스너
+    //새 메시지가(new message 이벤트) 도착할 시 읽고 뷰에 업데이트
     private val onNewMessage = Emitter.Listener { args ->
         ioScope.launch {
-            val data :JSONObject?= args[0] as? JSONObject
-
-            val id: String
-            val sender_uid: String
-            val name: String
-            val image: String
-            val message: String
-            val time: String
-            val count: Int
-
-            id = data!!.getString("id")
-            sender_uid = data!!.getString("uid")
-            name = data!!.getString("name")
-            image = data!!.getString("image")
-            message = data!!.getString("message")
-            time = data!!.getString("createdAt")
-            count = data!!.getInt("count")
-
-            val chatItem = ChatItem(id,sender_uid,name,image,message,count,time)
-            if(sender_uid == uid)
-                chatItem.viewType= ChatAdapter.MY_CHAT
-            else
-                chatItem.viewType= ChatAdapter.OTHER_CHAT
-
-            //view update
-            adapter.addItem(chatItem)
+            val chatId = args[0].toString()
+            api.readChat(chatId,uid).enqueue(object: Callback<ChatItem>{
+                override fun onResponse(call: Call<ChatItem>, response: Response<ChatItem>) {
+                    val newMsg = response.body()!!
+                    if(newMsg.uid==uid)
+                        newMsg.viewType=ChatAdapter.MY_CHAT
+                    else
+                        newMsg.viewType=ChatAdapter.OTHER_CHAT
+                    adapter.addItem(newMsg)
+                    recyclerView.scrollToPosition(adapter.itemCount - 1)
+                }
+                override fun onFailure(call: Call<ChatItem>, t: Throwable) {
+                    Log.e("readChat:api",t.stackTrace.toString())
+                }
+            })
         }
     }
     private val onJoin = Emitter.Listener { args ->
         ioScope.launch {
             val chatList = ArrayList<ChatItem>()
             val data :JSONArray?= args[0] as? JSONArray
-            var id: String
+            var chatId: String
             var sender_uid: String
             var name: String
             var image: String
             var message: String
             var time: String
             var count: Int
+
             for(i in 0 until data!!.length()){
                 val item = data.getJSONObject(i)
-                id = item.getString("id")
+                chatId = item.getString("id")
                 sender_uid = item.getString("uid")
                 name = item.getString("name")
                 image = item.getString("image")
                 message = item.getString("message")
                 time = item.getString("createdAt")
                 count = item.getInt("count")
-                val chatItem = ChatItem(id,sender_uid,name,image,message,count,time)
+                Log.d("count", "count:"+count)
+                val chatItem = ChatItem(chatId,sender_uid,name,image,message,count,time)
                 if(sender_uid == uid)
                     chatItem.viewType= ChatAdapter.MY_CHAT
                 else
                     chatItem.viewType= ChatAdapter.OTHER_CHAT
                 chatList.add(chatItem)
             }
-
-            adapter.countUpdate(chatList)
+            adapter.setList(chatList)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onResume(){
+        super.onResume()
+        mSocket.on("new message", onNewMessage)
+        mSocket.on("join", onJoin)
+        mSocket.connect()
+        mSocket.emit("join", data)//방 입장
+    }
+    override fun onPause() {
+        super.onPause()
+        api.leaveRoom(room,uid).enqueue(object:Callback<Void>{
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {}
+            override fun onFailure(call: Call<Void>, t: Throwable) {}
+        })
+        adapter.setList(ArrayList())
         mSocket.disconnect()
         mSocket.off("new message", onNewMessage)
+        mSocket.off("join", onJoin)
+
     }
 }

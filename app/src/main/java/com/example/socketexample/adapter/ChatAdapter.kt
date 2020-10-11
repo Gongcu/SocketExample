@@ -16,7 +16,7 @@ import com.example.socketexample.R
 import com.example.socketexample.model.ChatItem
 
 class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val list = ArrayList<ChatItem>()
+    private var list = ArrayList<ChatItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when(viewType){
@@ -56,21 +56,11 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
 
     fun addItem(item: ChatItem){
         list.add(item)
-        notifyDataSetChanged()
-        Log.d("notifydatasetchage",list.toString())
+        notifyItemInserted(list.size-1)
     }
-    fun setItem(list: List<ChatItem>){
-        this.list.addAll(list)
+    fun setList(list: ArrayList<ChatItem>){
+        this.list=list
         notifyDataSetChanged()
-        Log.d("notifydatasetchage",list.toString())
-    }
-    fun countUpdate(list: List<ChatItem>){
-        for(i in list.indices){
-            if(this.list[i].count!==list[i].count)
-                this.list[i].count=list[i].count
-        }
-        notifyDataSetChanged()
-        Log.d("notifydatasetchage",list.toString())
     }
 
     inner class OtherChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -87,8 +77,10 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
             timeTextView.text = item.time
             if(item.count!=0){
                 countTextView.text=item.count.toString()
+            }else{
+                countTextView.text=""
             }
-            Glide.with(context).load(url).apply(RequestOptions.bitmapTransform(RoundedCorners(15))).into(profileImageView).onLoadFailed(context.getDrawable(R.drawable.ic_baseline_person_24))
+            Glide.with(context).load(url).apply(RequestOptions.bitmapTransform(RoundedCorners(15))).into(profileImageView)
         }
     }
 
@@ -102,6 +94,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
             timeTextView.text = item.time
             if(item.count!=0){
                 countTextView.text=item.count.toString()
+            }else{
+                countTextView.text=""
             }
         }
     }

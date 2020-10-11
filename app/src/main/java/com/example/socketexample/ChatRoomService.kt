@@ -25,6 +25,18 @@ interface ChatRoomService {
         @Path("uid") uid:String,
         ): Call<List<ChatItem>>
 
+    @DELETE("/chat/read/{uid}/{chatroomId}")
+    fun readChat(
+        @Path("chatroomId") chatroomId:String,
+        @Path("uid") uid:String,
+    ): Call<ChatItem>
+
+    @DELETE("/chatroom/leave/{uid}/{chatroomId}")
+    fun leaveRoom(
+        @Path("chatroomId") chatroomId:String,
+        @Path("uid") uid:String,
+    ): Call<Void>
+
     @POST("/chat")
     fun sendChat(
         @Body chat: Chat
