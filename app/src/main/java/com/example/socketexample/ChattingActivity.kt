@@ -10,10 +10,12 @@ import com.example.socketexample.model.ChatItem
 import com.example.socketexample.model.User
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chatting.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,6 +48,7 @@ class ChattingActivity : AppCompatActivity() {
 
 
         mSocket.on("new message", onNewMessage)
+        mSocket.on("join", onJoin)
         mSocket.connect() //room 번호 따라 다르게 연결하게 코드 변경 필요
         mSocket.emit("join", room)//방 입장
 
@@ -97,6 +100,7 @@ class ChattingActivity : AppCompatActivity() {
         ioScope.launch {
             val data :JSONObject?= args[0] as? JSONObject
 
+            val id: String
             val sender_uid: String
             val name: String
             val image: String
@@ -104,6 +108,7 @@ class ChattingActivity : AppCompatActivity() {
             val time: String
             val count: Int
 
+            id = data!!.getString("id")
             sender_uid = data!!.getString("uid")
             name = data!!.getString("name")
             image = data!!.getString("image")
@@ -111,7 +116,7 @@ class ChattingActivity : AppCompatActivity() {
             time = data!!.getString("createdAt")
             count = data!!.getInt("count")
 
-            val chatItem = ChatItem(sender_uid,name,image,message,count,time)
+            val chatItem = ChatItem(id,sender_uid,name,image,message,count,time)
             if(sender_uid == uid)
                 chatItem.viewType= ChatAdapter.MY_CHAT
             else
@@ -119,6 +124,37 @@ class ChattingActivity : AppCompatActivity() {
 
             //view update
             adapter.addItem(chatItem)
+        }
+    }
+    private val onJoin = Emitter.Listener { args ->
+        ioScope.launch {
+            val chatList = ArrayList<ChatItem>()
+            val data :JSONArray?= args[0] as? JSONArray
+            var id: String
+            var sender_uid: String
+            var name: String
+            var image: String
+            var message: String
+            var time: String
+            var count: Int
+            for(i in 0 until data!!.length()){
+                val item = data.getJSONObject(i)
+                id = item.getString("id")
+                sender_uid = item.getString("uid")
+                name = item.getString("name")
+                image = item.getString("image")
+                message = item.getString("message")
+                time = item.getString("createdAt")
+                count = item.getInt("count")
+                val chatItem = ChatItem(id,sender_uid,name,image,message,count,time)
+                if(sender_uid == uid)
+                    chatItem.viewType= ChatAdapter.MY_CHAT
+                else
+                    chatItem.viewType= ChatAdapter.OTHER_CHAT
+                chatList.add(chatItem)
+            }
+
+            adapter.countUpdate(chatList)
         }
     }
 

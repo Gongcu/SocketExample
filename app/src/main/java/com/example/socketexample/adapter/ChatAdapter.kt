@@ -64,6 +64,14 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerV
         notifyDataSetChanged()
         Log.d("notifydatasetchage",list.toString())
     }
+    fun countUpdate(list: List<ChatItem>){
+        for(i in list.indices){
+            if(this.list[i].count!==list[i].count)
+                this.list[i].count=list[i].count
+        }
+        notifyDataSetChanged()
+        Log.d("notifydatasetchage",list.toString())
+    }
 
     inner class OtherChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val nameTextView = itemView.findViewById<TextView>(R.id.nameTextView)
