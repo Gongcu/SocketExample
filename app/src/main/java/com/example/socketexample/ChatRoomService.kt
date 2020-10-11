@@ -25,13 +25,13 @@ interface ChatRoomService {
         @Path("uid") uid:String,
         ): Call<List<ChatItem>>
 
-    @DELETE("/chat/read/{uid}/{chatroomId}")
+    @DELETE("/chat/read/{chatId}/{uid}")
     fun readChat(
-        @Path("chatroomId") chatroomId:String,
+        @Path("chatId") chatId:String,
         @Path("uid") uid:String,
     ): Call<ChatItem>
 
-    @DELETE("/chatroom/leave/{uid}/{chatroomId}")
+    @DELETE("/chatroom/leave/{chatroomId}/{uid}")
     fun leaveRoom(
         @Path("chatroomId") chatroomId:String,
         @Path("uid") uid:String,

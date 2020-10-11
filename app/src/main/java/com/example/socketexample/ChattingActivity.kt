@@ -100,8 +100,10 @@ class ChattingActivity : AppCompatActivity() {
     private val onNewMessage = Emitter.Listener { args ->
         ioScope.launch {
             val chatId = args[0].toString()
+            Log.d("chatId uid",chatId+","+uid)
             api.readChat(chatId,uid).enqueue(object: Callback<ChatItem>{
                 override fun onResponse(call: Call<ChatItem>, response: Response<ChatItem>) {
+                    Log.d("read",response.body()!!.toString())
                     val newMsg = response.body()!!
                     if(newMsg.uid==uid)
                         newMsg.viewType=ChatAdapter.MY_CHAT
@@ -159,7 +161,7 @@ class ChattingActivity : AppCompatActivity() {
     }
     override fun onPause() {
         super.onPause()
-        api.leaveRoom(room,uid).enqueue(object:Callback<Void>{
+        api.leaveRoom(room, uid).enqueue(object:Callback<Void>{
             override fun onResponse(call: Call<Void>, response: Response<Void>) {}
             override fun onFailure(call: Call<Void>, t: Throwable) {}
         })
