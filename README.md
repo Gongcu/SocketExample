@@ -8,8 +8,7 @@
 - Coroutine
 
 #### 아래는 가상 디바이스와 실제 기기 간의 통신 예시. 
-
-<img src="https://user-images.githubusercontent.com/30337408/95653662-45f83a00-0b35-11eb-97e3-77abe38d8a79.png" height=30% width=30%>
+<img src="https://user-images.githubusercontent.com/30337408/97070627-caa68600-1614-11eb-9800-ba25277da74b.gif" height=70% width=70%>
 
 #### 9.Patch 적용 메시지
 
@@ -19,9 +18,9 @@
 
 <img src="https://user-images.githubusercontent.com/30337408/95659101-badd6b00-0b59-11eb-898e-08b656d63f4f.png" height=40% width=40%>
 
-#### 채팅 연관 E-R 다이어그램
+#### MySQL E-R 다이어그램
 ![채팅DB구조](https://user-images.githubusercontent.com/30337408/95659288-fc224a80-0b5a-11eb-9aef-2dc86450f0e7.png)
 
-## 서버🖥 Node.js(Express, Socket.io, MongodDB)
+## 서버🖥 Node.js(Express, Socket.io, MySQL)
 
 - [REPOSITORY](https://github.com/Gongcu/REST-API-SERVER)
