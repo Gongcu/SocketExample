@@ -18,9 +18,9 @@
 
 <img src="https://user-images.githubusercontent.com/30337408/95659101-badd6b00-0b59-11eb-898e-08b656d63f4f.png" height=40% width=40%>
 
-#### 채팅 연관 E-R 다이어그램
+#### MySQL E-R 다이어그램
 ![채팅DB구조](https://user-images.githubusercontent.com/30337408/95659288-fc224a80-0b5a-11eb-9aef-2dc86450f0e7.png)
 
-## 서버🖥 Node.js(Express, Socket.io, MongodDB)
+## 서버🖥 Node.js(Express, Socket.io, MySQL)
 
 - [REPOSITORY](https://github.com/Gongcu/REST-API-SERVER)
