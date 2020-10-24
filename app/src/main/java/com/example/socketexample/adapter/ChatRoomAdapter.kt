@@ -6,11 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.example.socketexample.ChattingActivity
+import com.example.socketexample.view.ChattingActivity
 import com.example.socketexample.R
 import com.example.socketexample.model.Chatroom
 

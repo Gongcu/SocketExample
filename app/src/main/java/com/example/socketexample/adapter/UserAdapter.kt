@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socketexample.MainActivity
+import com.example.socketexample.view.MainActivity
 import com.example.socketexample.R
 import com.example.socketexample.model.User
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A0C0D7"
-    tools:context=".ChattingActivity">
+    tools:context=".view.ChattingActivity">
     <TextView
         android:id="@+id/chatroomNameTextView"
         android:text="테스트 채팅방"

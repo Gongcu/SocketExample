@@ -1,9 +1,12 @@
-package com.example.socketexample
+package com.example.socketexample.view
 
 import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.socketexample.util.ChatRoomService
+import com.example.socketexample.R
+import com.example.socketexample.util.RetrofitAPI
 import com.example.socketexample.adapter.ChatRoomAdapter
 import com.example.socketexample.model.Chatroom
 import kotlinx.android.synthetic.main.activity_main.*
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         builder.setView(dialogView)
             .setPositiveButton("확인") { dialogInterface, i ->
-                addChatroom(Chatroom("",name.text.toString(),CLUB_ID))
+                addChatroom(Chatroom("",name.text.toString(), CLUB_ID))
             }.show()
     }
 

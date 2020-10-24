@@ -1,4 +1,4 @@
-package com.example.socketexample
+package com.example.socketexample.util
 
 import com.example.socketexample.model.*
 import retrofit2.Call
@@ -24,12 +24,6 @@ interface ChatRoomService {
         @Path("chatroomId") chatroomId:String,
         @Path("uid") uid:String,
         ): Call<List<ChatItem>>
-
-    @DELETE("/chat/read/{chatId}/{uid}")
-    fun readChat(
-        @Path("chatId") chatId:String,
-        @Path("uid") uid:String,
-    ): Call<ChatItem>
 
     @DELETE("/chatroom/leave/{chatroomId}/{uid}")
     fun leaveRoom(

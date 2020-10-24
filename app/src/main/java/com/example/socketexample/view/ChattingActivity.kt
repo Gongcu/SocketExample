@@ -1,16 +1,16 @@
-package com.example.socketexample
+package com.example.socketexample.view
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.socketexample.util.ChatRoomService
+import com.example.socketexample.R
+import com.example.socketexample.util.RetrofitAPI
 import com.example.socketexample.adapter.ChatAdapter
 import com.example.socketexample.model.Chat
 import com.example.socketexample.model.ChatItem
-import com.example.socketexample.model.User
 import com.github.nkzawa.emitter.Emitter
 import com.github.nkzawa.socketio.client.IO
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_chatting.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,23 +99,22 @@ class ChattingActivity : AppCompatActivity() {
     //새 메시지가(new message 이벤트) 도착할 시 읽고 뷰에 업데이트
     private val onNewMessage = Emitter.Listener { args ->
         ioScope.launch {
-            val chatId = args[0].toString()
-            Log.d("chatId uid",chatId+","+uid)
-            api.readChat(chatId,uid).enqueue(object: Callback<ChatItem>{
-                override fun onResponse(call: Call<ChatItem>, response: Response<ChatItem>) {
-                    Log.d("read",response.body()!!.toString())
-                    val newMsg = response.body()!!
-                    if(newMsg.uid==uid)
-                        newMsg.viewType=ChatAdapter.MY_CHAT
-                    else
-                        newMsg.viewType=ChatAdapter.OTHER_CHAT
-                    adapter.addItem(newMsg)
-                    recyclerView.scrollToPosition(adapter.itemCount - 1)
-                }
-                override fun onFailure(call: Call<ChatItem>, t: Throwable) {
-                    Log.e("readChat:api",t.stackTrace.toString())
-                }
-            })
+            val item:JSONObject = args[0] as JSONObject;
+            val chatId = item.getString("id")
+            val sender_uid = item.getString("uid")
+            val name = item.getString("name")
+            val image = item.getString("image")
+            val message = item.getString("message")
+            val time = item.getString("createdAt")
+            val count = item.getInt("count")
+
+            val chatItem = ChatItem(chatId,sender_uid,name,image,message,count,time)
+            if(sender_uid == uid)
+                chatItem.viewType= ChatAdapter.MY_CHAT
+            else
+                chatItem.viewType= ChatAdapter.OTHER_CHAT
+            adapter.addItem(chatItem)
+            recyclerView.scrollToPosition(adapter.itemCount - 1)
         }
     }
     private val onJoin = Emitter.Listener { args ->

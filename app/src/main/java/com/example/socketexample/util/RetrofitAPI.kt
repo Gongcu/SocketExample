@@ -1,6 +1,6 @@
-package com.example.socketexample
+package com.example.socketexample.util
 
-import com.google.gson.GsonBuilder
+import com.example.socketexample.view.MainActivity
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
