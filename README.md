@@ -8,7 +8,7 @@
 - Coroutine
 
 #### 아래는 가상 디바이스와 실제 기기 간의 통신 예시. 
-<img src="https://user-images.githubusercontent.com/30337408/95676898-a1412f80-0bfc-11eb-86bd-659d40dbf3dd.gif" height=70% width=70%>
+<img src="https://user-images.githubusercontent.com/30337408/97070627-caa68600-1614-11eb-9800-ba25277da74b.gif" height=70% width=70%>
 
 #### 9.Patch 적용 메시지
 
