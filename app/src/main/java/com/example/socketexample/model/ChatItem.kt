@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ChatItem(
     val id: String,
-    val uid: String,
+    val userId: String,
     val name: String,
     val image: String,
     val message: String,

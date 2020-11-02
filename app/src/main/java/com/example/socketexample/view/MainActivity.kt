@@ -1,6 +1,7 @@
 package com.example.socketexample.view
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,19 +17,19 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var uid: String
+    private lateinit var userId: String
     private lateinit var name: String
     private val retrofit = RetrofitAPI.getInstance()
     private val api = retrofit.create(ChatRoomService::class.java)
     private val adapter: ChatRoomAdapter by lazy{
-        ChatRoomAdapter(this,uid,name)
+        ChatRoomAdapter(this,userId,name)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        uid= intent.extras!!.getString("uid")!!
+        userId= intent.extras!!.getString("userId")!!
         name= intent.extras!!.getString("name")!!
 
         chatroomRecyclerView.adapter = adapter
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         builder.setView(dialogView)
             .setPositiveButton("확인") { dialogInterface, i ->
-                addChatroom(Chatroom("",name.text.toString(), CLUB_ID))
+                addChatroom(Chatroom("",name.text.toString(), clubId))
             }.show()
     }
 
@@ -67,20 +68,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getChatroom(){
-        api.getChatRoom(CLUB_ID).enqueue(object : Callback<List<Chatroom>> {
+        api.getChatRoom(clubId,userId).enqueue(object : Callback<List<Chatroom>> {
             override fun onResponse(call: Call<List<Chatroom>>, response: Response<List<Chatroom>>) {
                 if (response.body() != null) {
                     adapter.setList(response.body()!!)
+                    Log.d("chatroom",response.body()!!.toString())
                 }
             }
 
-            override fun onFailure(call: Call<List<Chatroom>>, t: Throwable) {}
+            override fun onFailure(call: Call<List<Chatroom>>, t: Throwable) {
+                Log.d("chatroom",t.message.toString())
+            }
         })
     }
 
     companion object{
         const val IP = "http://211.176.83.66:3000/"
-        const val CLUB_ID = "1"
+        const val clubId = "1"
 
     }
 }

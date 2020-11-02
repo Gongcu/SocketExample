@@ -9,9 +9,10 @@ interface ChatRoomService {
     fun getUser(
     ): Call<List<User>>
 
-    @GET("/chatroom/{club_id}")
+    @GET("/chatroom/{clubId}/{userId}")
     fun getChatRoom(
-        @Path("club_id") club_id:String
+        @Path("clubId") clubId:String,
+        @Path("userId") userId:String
     ): Call<List<Chatroom>>
 
     @POST("/chatroom")
@@ -19,20 +20,21 @@ interface ChatRoomService {
         @Body chatroom: Chatroom,
     ): Call<Chatroom>
 
-    @GET("/chatroom/enter/{chatroomId}/{uid}")
+    @GET("/chatroom/{chatroomId}/{userId}/enter")
     fun getChat(
         @Path("chatroomId") chatroomId:String,
-        @Path("uid") uid:String,
+        @Path("userId") userId:String,
         ): Call<List<ChatItem>>
 
-    @DELETE("/chatroom/leave/{chatroomId}/{uid}")
+    @DELETE("/chatroom/{chatroomId}/{userId}/leave")
     fun leaveRoom(
         @Path("chatroomId") chatroomId:String,
-        @Path("uid") uid:String,
+        @Path("userId") userId:String,
     ): Call<Void>
 
-    @POST("/chat")
+    @POST("/chatroom/{chatroomId}/chat")
     fun sendChat(
+        @Path("chatroomId") chatroomId:String,
         @Body chat: Chat
     ): Call<Chat>
 }

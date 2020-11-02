@@ -24,8 +24,8 @@ import retrofit2.Response
 
 class ChattingActivity : AppCompatActivity() {
     private val list = ArrayList<ChatItem>()
-    private lateinit var uid: String
-    private lateinit var room: String
+    private lateinit var userId: String
+    private lateinit var chatroomId: String
     private lateinit var name: String
     private val mSocket = IO.socket(MainActivity.IP)
     private val ioScope = CoroutineScope(Dispatchers.Main)
@@ -40,12 +40,12 @@ class ChattingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
 
-        uid= intent.extras!!.getString("uid")!!
-        room= intent.extras!!.getString("room")!!
+        userId= intent.extras!!.getString("userId")!!
+        chatroomId= intent.extras!!.getString("chatroomId")!!
         name= intent.extras!!.getString("name")!!
 
-        data.put("chatroomId",room)
-        data.put("uid",uid)
+        data.put("chatroomId",chatroomId)
+        data.put("userId",userId)
 
         val room_name= intent.extras!!.getString("room_name")!!
         chatroomNameTextView.text=room_name
@@ -62,7 +62,7 @@ class ChattingActivity : AppCompatActivity() {
 
     private fun attemptSend() {
         val message: String = inputMessageTextView.text.toString()
-        api.sendChat(Chat(uid,message,room)).enqueue(object: Callback<Chat>{
+        api.sendChat(chatroomId,Chat(userId,message,chatroomId)).enqueue(object: Callback<Chat>{
             override fun onResponse(call: Call<Chat>, response: Response<Chat>) {
                 Log.d("send",response.body().toString())
                 //chatroom=null 응답값으로 오는 chatroom값 어차피 필요없어서 그렇게 처리함. 근데 보낼때는 필수
@@ -75,12 +75,12 @@ class ChattingActivity : AppCompatActivity() {
     }
 
     private fun getChatting() {
-        api.getChat(room,uid).enqueue(object: Callback<List<ChatItem>> {
+        api.getChat(chatroomId,userId).enqueue(object: Callback<List<ChatItem>> {
             override fun onResponse(call: Call<List<ChatItem>>, response: Response<List<ChatItem>>) {
                 Log.d("res",response!!.body()!!.toString())
                 list.addAll(response.body()!!)
                 for(i in list.indices){
-                    if(list[i].uid==uid){
+                    if(list[i].userId==userId){
                         list[i].viewType=ChatAdapter.MY_CHAT
                     }
                     else
@@ -88,6 +88,9 @@ class ChattingActivity : AppCompatActivity() {
                 }
                 adapter.setList(list)
                 recyclerView.scrollToPosition(adapter.itemCount - 1)
+
+                //읽음 처리
+                
             }
             override fun onFailure(call: Call<List<ChatItem>>, t: Throwable) {
                 Log.d("tt",t.message)
@@ -101,15 +104,15 @@ class ChattingActivity : AppCompatActivity() {
         ioScope.launch {
             val item:JSONObject = args[0] as JSONObject;
             val chatId = item.getString("id")
-            val sender_uid = item.getString("uid")
+            val sendUserId= item.getString("userId")
             val name = item.getString("name")
             val image = item.getString("image")
             val message = item.getString("message")
             val time = item.getString("createdAt")
             val count = item.getInt("count")
 
-            val chatItem = ChatItem(chatId,sender_uid,name,image,message,count,time)
-            if(sender_uid == uid)
+            val chatItem = ChatItem(chatId,sendUserId,name,image,message,count,time)
+            if(sendUserId == userId)
                 chatItem.viewType= ChatAdapter.MY_CHAT
             else
                 chatItem.viewType= ChatAdapter.OTHER_CHAT
@@ -122,7 +125,7 @@ class ChattingActivity : AppCompatActivity() {
             val chatList = ArrayList<ChatItem>()
             val data :JSONArray?= args[0] as? JSONArray
             var chatId: String
-            var sender_uid: String
+            var sendUserId: String
             var name: String
             var image: String
             var message: String
@@ -132,15 +135,15 @@ class ChattingActivity : AppCompatActivity() {
             for(i in 0 until data!!.length()){
                 val item = data.getJSONObject(i)
                 chatId = item.getString("id")
-                sender_uid = item.getString("uid")
+                sendUserId = item.getString("userId")
                 name = item.getString("name")
                 image = item.getString("image")
                 message = item.getString("message")
                 time = item.getString("createdAt")
                 count = item.getInt("count")
                 Log.d("count", "count:"+count)
-                val chatItem = ChatItem(chatId,sender_uid,name,image,message,count,time)
-                if(sender_uid == uid)
+                val chatItem = ChatItem(chatId,sendUserId,name,image,message,count,time)
+                if(sendUserId == userId)
                     chatItem.viewType= ChatAdapter.MY_CHAT
                 else
                     chatItem.viewType= ChatAdapter.OTHER_CHAT
@@ -160,7 +163,7 @@ class ChattingActivity : AppCompatActivity() {
     }
     override fun onPause() {
         super.onPause()
-        api.leaveRoom(room, uid).enqueue(object:Callback<Void>{
+        api.leaveRoom(chatroomId, userId).enqueue(object:Callback<Void>{
             override fun onResponse(call: Call<Void>, response: Response<Void>) {}
             override fun onFailure(call: Call<Void>, t: Throwable) {}
         })

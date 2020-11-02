@@ -46,8 +46,8 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
             Glide.with(context).load(url).into(imageView)
             itemView.setOnClickListener {
                 val intent = Intent(context, MainActivity::class.java)
-                Log.d("uid",list.toString())
-                intent.putExtra("uid",item.id)
+                Log.d("userId",list.toString())
+                intent.putExtra("userId",item.id)
                 intent.putExtra("name",item.name)
                 context.startActivity(intent)
             }

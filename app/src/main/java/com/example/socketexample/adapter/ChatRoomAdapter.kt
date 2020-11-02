@@ -12,7 +12,7 @@ import com.example.socketexample.view.ChattingActivity
 import com.example.socketexample.R
 import com.example.socketexample.model.Chatroom
 
-class ChatRoomAdapter(private val context: Context,private val uid: String,private val name: String) : RecyclerView.Adapter<ChatRoomAdapter.ViewHolder>() {
+class ChatRoomAdapter(private val context: Context,private val userId: String,private val name: String) : RecyclerView.Adapter<ChatRoomAdapter.ViewHolder>() {
     private val list = ArrayList<Chatroom>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,7 +29,7 @@ class ChatRoomAdapter(private val context: Context,private val uid: String,priva
     }
 
     fun addItem(item: Chatroom){
-        val chatroomGetter = Chatroom(item.id,item.name,item.club_id)
+        val chatroomGetter = Chatroom(item.id,item.name,item.clubId)
         list.add(chatroomGetter)
         notifyDataSetChanged()
         Log.d("notifydatasetchage",list.toString())
@@ -48,8 +48,8 @@ class ChatRoomAdapter(private val context: Context,private val uid: String,priva
             nameTextView.text=item.name
             rootView.setOnClickListener {
                 val intent = Intent(context, ChattingActivity::class.java)
-                intent.putExtra("uid",uid)
-                intent.putExtra("room",item.id)
+                intent.putExtra("userId",userId)
+                intent.putExtra("chatroomId",item.id)
                 intent.putExtra("room_name",item.name)
                 intent.putExtra("name",name)
                 context.startActivity(intent)
